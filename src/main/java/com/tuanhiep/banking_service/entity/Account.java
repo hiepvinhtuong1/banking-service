@@ -1,0 +1,39 @@
+package com.tuanhiep.banking_service.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@Entity(name = "accounts")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Account {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String accountId;
+
+    @NotBlank(message = "CUSTOMER_NAME_NOT_BLANK")
+    String customerName;
+
+    @Email(message = "INVALID EMAIL")
+    @NotBlank(message = "EMAIL_NOT_BLANK")
+    String email;
+
+    @NotBlank(message = "PHONE_NUMBER_NOT_BLANK")
+    @Size(min = 10, max = 15, message = "INVALID_PHONE_NUMBER_LENGTH")
+    String phoneNumber;
+
+    @NotBlank(message = "PASSWORD_NOT_BLANK")
+    @Size(min = 6, message = "INVALID_PASSWORD_LENGTH")
+    String password;
+}
