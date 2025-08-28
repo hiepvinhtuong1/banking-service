@@ -1,4 +1,4 @@
-package com.tuanhiep.banking_service.dto.response;
+package com.tuanhiep.banking_service.dto.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -9,8 +9,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class LoginResponse {
+public class LogoutRequest {
     String accessToken;
     String refreshToken;
-    AccountResponse accountResponse;
 }

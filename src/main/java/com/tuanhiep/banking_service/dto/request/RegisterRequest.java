@@ -1,30 +1,18 @@
-package com.tuanhiep.banking_service.entity;
+package com.tuanhiep.banking_service.dto.request;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.SuperBuilder;
 
-import java.util.Set;
-
-@Entity(name = "accounts")
-@Builder
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class Account extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    String accountId;
-
-    @NotBlank(message = "CUSTOMER_NAME_NOT_BLANK")
-    String customerName;
-
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+public class RegisterRequest {
     @Email(message = "INVALID EMAIL")
     @NotBlank(message = "EMAIL_NOT_BLANK")
     String email;
@@ -36,11 +24,4 @@ public class Account extends BaseEntity {
     @NotBlank(message = "PASSWORD_NOT_BLANK")
     @Size(min = 6, message = "INVALID_PASSWORD_LENGTH")
     String password;
-
-    String verifyCode;
-
-    boolean isActive = false;
-
-    @ManyToMany
-    Set<Role> roles;
 }

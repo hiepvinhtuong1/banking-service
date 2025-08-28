@@ -14,6 +14,6 @@ import lombok.experimental.FieldDefaults;
 public class APIResponse <T> {
     int code = 1000;// default success code;
     String message;
-    T result;
+    T data;
 }
 

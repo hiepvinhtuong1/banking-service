@@ -34,7 +34,6 @@ public class GlobalExceptionHandler {
     // Xử lý ngoại lệ MethodArgumentNotValidException
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<APIResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        System.out.println("e: " + e.getFieldError().getDefaultMessage());
         String enumKey = e.getFieldError().getDefaultMessage();
         ErrorCode errorCode = ErrorCode.valueOf(enumKey);
 

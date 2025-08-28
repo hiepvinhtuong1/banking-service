@@ -4,20 +4,28 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-    UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error"),
+    // 1000 - Authentication
+    UNAUTHENTICATED(1001, "Unauthenticated"),
+    TOKEN_EXPIRED_EXCEPTION(1002, "Token expired exception"),
+    TOKEN_CANNOT_CREATE_EXCEPTION(1003,"Token can not create exception" ),
+    EMAIL_OR_PASSWORD_NOT_MATCH(1004, "Email or passowrd is incorrect"),
+    ACCESS_TOKEN_STILL_VALID(1005,"access token is still valid"),
+    // 2000 - Account
+    ACCOUNT_EMAIL_EXISTED(2001, "Email existed"),
+    ACCOUNT_PHONE_NUMBER_EXISTED(2002, "Phone number existed"),
+    INVALID_EMAIL(2003, "Email must be a valid email address"),
+    EMAIL_NOT_BLANK(2004, "Email cannot be empty"),
+    INVALID_PHONE_NUMBER_LENGTH(2005, "Phone number must be between 10 and 15 characters"),
+    PHONE_NUMBER_NOT_BLANK(2006, "Phone number cannot be empty"),
+    INVALID_PASSWORD_LENGTH(2007, "Password must be greater than 6 characters"),
+    PASSWORD_NOT_BLANK(2008, "Password cannot be empty"),
+    CUSTOMER_NAME_NOT_BLANK(2009, "Customer name cannot be empty"),
+    ACCOUNT_NOT_FOUND(2010, "Account not found"),
+    ACCOUNT_IS_ACTIVE(2011,"Account is active"),
+    VERIFY_CODE_NOT_MATCH(2012,"Verify code does not match"),
+    // 9000 - System
+    UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error"), ;
 
-    UNAUTHENTICATED(1001,"Unauthenticated"),
-
-    ACCOUNT_EXISTED(2001, "Account existed"),
-    INVALID_EMAIL(2002, "Email must be a valid email address"),
-    EMAIL_NOT_BLANK(2003, "Email cannot be empty"),
-    INVALID_PHONE_NUMBER_LENGTH(2004, "Phone number must be between 10 and 15 characters"),
-    PHONE_NUMBER_NOT_BLANK(2005, "Phone number cannot be empty"),
-    INVALID_PASSWORD_LENGTH(2006, "Password must be greater than 6 characters"),
-    PASSWORD_NOT_BLANK(2007, "Password cannot be empty"),
-    CUSTOMER_NAME_NOT_BLANK(2008, "Customer name cannot be empty"),
-    ACCOUNT_NOT_FOUND(2009,"Account not found")
-    ;
     private final int code;
     private final String message;
 
@@ -25,5 +33,4 @@ public enum ErrorCode {
         this.code = code;
         this.message = message;
     }
-
 }

@@ -10,9 +10,19 @@ spring:
     password: hiep2004
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
 
-
 jwt:
-  signerKey:"kHRt5ItSVuMaNWJDnlwXRpjCygJBo96ssX63ce+9a7iAO0mWEOIaqU5gbBG4GG9B"
+  SIGNER_KEY: "KiXwnjGvrPmlfJlgd6SoVcZHn+M2NeUEnfatWkX1EmAqKbC3RMtuE/b5zWRcmTIx"  # Đây là secret key dùng để ký/verify JWT
+  ACCESS_TOKEN_SIGNER_KEY: "KiXwnjGvrPmlfJlgd6SoVcZHn+M2NeUEnfatWkX1EmAqKbC3RMtuE/b5zWRcmTIx"
+  REFRESH_TOKEN_SIGNER_KEY: "M5dQ8DZztmno/z8fqeD+un5fUz26McPhW5vLAsKN8qTIAkRqFB5EzPaDZ2WeHAvj"
+  ACCESS_TOKEN_DURATION: 540 # in second
+  REFRESH_TOKEN_DURATION: 3600 # in second
+
+mailersend:
+  api:
+    token: "mlsn.fe3360b60c86aa35dab2cf553368ba4de7dc662845cf8aa40928d309b51bcd80"
+  from:
+    email: "tuanhiepdev@test-51ndgwvnk25lzqx8.mlsender.net"
+    name: "Proton Banking"
