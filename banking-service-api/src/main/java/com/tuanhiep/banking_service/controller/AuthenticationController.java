@@ -4,6 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import com.tuanhiep.banking_service.dto.request.*;
 import com.tuanhiep.banking_service.dto.response.*;
 import com.tuanhiep.banking_service.service.AuthenticationService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,7 +23,7 @@ public class AuthenticationController {
     AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    APIResponse<LoginResponse> login (@RequestBody LoginRequest request) {
+    APIResponse<LoginResponse> login (@RequestBody @Valid LoginRequest request) {
         LoginResponse result = authenticationService.login(request);
         return APIResponse.<LoginResponse>builder()
                 .data(result)
@@ -30,7 +31,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    APIResponse<AccountResponse> register (@RequestBody AccountCreationRequest request) {
+    APIResponse<AccountResponse> register (@RequestBody @Valid AccountCreationRequest request) {
         AccountResponse result = authenticationService.register(request);
         return APIResponse.<AccountResponse>builder()
                 .data(result)

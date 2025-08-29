@@ -1,9 +1,7 @@
 package com.tuanhiep.banking_service.service.impl;
 
 import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jwt.JWTClaimsSet;
+
 import com.nimbusds.jwt.SignedJWT;
 import com.tuanhiep.banking_service.dto.request.*;
 import com.tuanhiep.banking_service.dto.response.*;
@@ -17,10 +15,9 @@ import com.tuanhiep.banking_service.repository.AccountRepository;
 import com.tuanhiep.banking_service.repository.InvalidatedTokenRepository;
 import com.tuanhiep.banking_service.repository.RoleRepository;
 import com.tuanhiep.banking_service.service.AuthenticationService;
-import com.tuanhiep.banking_service.service.MailerSendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +59,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
 
         if (!passwordEncoder.matches(request.getPassword(), account.getPassword())){
-            throw new AppException(ErrorCode.TOKEN_CANNOT_CREATE_EXCEPTION);
+            throw new AppException(ErrorCode.EMAIL_OR_PASSWORD_NOT_MATCH);
         }
 
         return LoginResponse.builder()
@@ -97,8 +94,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         newAccount.setRoles(roles);
 
         newAccount.setVerifyCode(UUID.randomUUID().toString());
-
-        Account createdAccount = accountRepository.save(newAccount);
+        Account createdAccount = null;
+        try {
+            createdAccount  = accountRepository.save(newAccount);
+        } catch (DataIntegrityViolationException e) {
+            throw new AppException(ErrorCode.ACCOUNT_EMAIL_EXISTED);
+        }
 
 
 

@@ -27,6 +27,7 @@ public class Account extends BaseEntity {
 
     @Email(message = "INVALID EMAIL")
     @NotBlank(message = "EMAIL_NOT_BLANK")
+    @Column(name = "email", unique = true)
     String email;
 
     @NotBlank(message = "PHONE_NUMBER_NOT_BLANK")
@@ -40,7 +41,7 @@ public class Account extends BaseEntity {
     String verifyCode;
 
     boolean isActive = false;
-
+    boolean isDestroy = false;
     @ManyToMany
     Set<Role> roles;
 }

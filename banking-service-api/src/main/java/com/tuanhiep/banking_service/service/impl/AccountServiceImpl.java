@@ -34,10 +34,6 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountResponse createNew(AccountCreationRequest request) {
 
-        if (accountRepository.existsAccountByEmail(request.getEmail())) {
-            throw new AppException(ErrorCode.ACCOUNT_EMAIL_EXISTED);
-        }
-
         if (accountRepository.existsAccountByPhoneNumber(request.getPhoneNumber())) {
             throw new AppException(ErrorCode.ACCOUNT_PHONE_NUMBER_EXISTED);
         }

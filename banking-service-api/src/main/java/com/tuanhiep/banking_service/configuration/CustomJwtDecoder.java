@@ -9,6 +9,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.text.ParseException;
@@ -33,7 +35,13 @@ public class CustomJwtDecoder implements JwtDecoder {
             // ✅ Gọi phương thức verifyToken trực tiếp nếu không cần dùng SignedJWT
             jwtService.verifyToken(token, false);
         } catch (JOSEException | ParseException e) {
-            throw new JwtException(e.getMessage());
+            // Gắn exception vào request để JwtAuthenticationEntryPoint xử lý
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            if (attributes != null) {
+                attributes.getRequest().setAttribute("exception", e);
+            }
+            // Ném JwtException để Spring Security gọi AuthenticationEntryPoint
+            throw new JwtException(e.getMessage(), e);
         }
 
         if (Objects.isNull(nimbusJwtDecoder)) {

@@ -5,7 +5,6 @@ import com.tuanhiep.banking_service.dto.request.*;
 import com.tuanhiep.banking_service.dto.response.AccountResponse;
 import com.tuanhiep.banking_service.dto.response.LoginResponse;
 import com.tuanhiep.banking_service.dto.response.RefreshTokenResponse;
-import com.tuanhiep.banking_service.dto.response.RegisterResponse;
 
 import java.text.ParseException;
 

@@ -23,6 +23,10 @@ public enum ErrorCode {
     ACCOUNT_NOT_FOUND(2010, "Account not found"),
     ACCOUNT_IS_ACTIVE(2011,"Account is active"),
     VERIFY_CODE_NOT_MATCH(2012,"Verify code does not match"),
+    EMAIL_INVALID_FORMAT(2013, "Email format is invalid (example: example@domain.com)"),
+    INVALID_PHONE_NUMBER_FORMAT(2014, "Phone number must contain only digits"),
+    INVALID_PASSWORD_FORMAT(2015, "Password must include at least 1 letter, 1 number and be 8-256 characters long"),
+
     // 9000 - System
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error"), ;
 

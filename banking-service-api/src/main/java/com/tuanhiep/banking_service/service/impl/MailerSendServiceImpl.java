@@ -3,11 +3,12 @@ package com.tuanhiep.banking_service.service.impl;
 import com.mailersend.sdk.MailerSend;
 import com.mailersend.sdk.emails.Email;
 import com.mailersend.sdk.exceptions.MailerSendException;
+import com.tuanhiep.banking_service.service.MailerSendService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MailerSendServiceImpl {
+public class MailerSendServiceImpl implements MailerSendService {
     @Value("${mailersend.api.token}")
     private String apiToken;
 

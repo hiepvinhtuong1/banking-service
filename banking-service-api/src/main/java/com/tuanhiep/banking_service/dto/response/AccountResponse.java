@@ -18,6 +18,7 @@ public class AccountResponse {
     String phoneNumber;
     String verifyCode;
     boolean isActive;
+    boolean isDestroy;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
     Set<RoleResponse> roles;
