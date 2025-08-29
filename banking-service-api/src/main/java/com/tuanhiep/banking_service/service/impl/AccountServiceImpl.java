@@ -10,7 +10,10 @@ import com.tuanhiep.banking_service.mapper.AccountMapper;
 import com.tuanhiep.banking_service.repository.AccountRepository;
 import com.tuanhiep.banking_service.repository.RoleRepository;
 import com.tuanhiep.banking_service.service.AccountService;
+import com.tuanhiep.banking_service.service.impl.specification.AccountSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -61,6 +64,12 @@ public class AccountServiceImpl implements AccountService {
         return  accountMapper.toAccountResponse(
                     accountRepository.findById(accountId).orElseThrow(
                             () -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND)));
+    }
+
+    @Override
+    public Page<AccountResponse> getAllAccounts(Pageable pageable, String customerName, String phoneNumber, String email) {
+        return accountRepository.findAll(AccountSpecification.combineFilters(customerName, phoneNumber, email), pageable)
+                .map(accountMapper::toAccountResponse);
     }
 
 }

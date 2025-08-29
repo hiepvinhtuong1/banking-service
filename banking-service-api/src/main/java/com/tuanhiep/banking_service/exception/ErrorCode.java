@@ -26,7 +26,9 @@ public enum ErrorCode {
     EMAIL_INVALID_FORMAT(2013, "Email format is invalid (example: example@domain.com)"),
     INVALID_PHONE_NUMBER_FORMAT(2014, "Phone number must contain only digits"),
     INVALID_PASSWORD_FORMAT(2015, "Password must include at least 1 letter, 1 number and be 8-256 characters long"),
-
+    VERIFY_CODE_NOT_BLANK(2016,"Verify code is not blank"),
+    ACCOUNT_IS_NOT_ACTIVE(2017,"Account is not active"),
+    ACCOUNT_IS_DELETED(2018,"Account is deleted"),
     // 9000 - System
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error"), ;
 

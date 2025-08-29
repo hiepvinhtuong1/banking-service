@@ -42,6 +42,7 @@ public class Account extends BaseEntity {
 
     boolean isActive = false;
     boolean isDestroy = false;
+
     @ManyToMany
     Set<Role> roles;
 }

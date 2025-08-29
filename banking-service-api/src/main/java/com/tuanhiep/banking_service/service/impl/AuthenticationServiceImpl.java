@@ -62,6 +62,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AppException(ErrorCode.EMAIL_OR_PASSWORD_NOT_MATCH);
         }
 
+        if (!account.isActive()) {
+            throw new AppException(ErrorCode.ACCOUNT_IS_NOT_ACTIVE);
+        }
+
+        if (account.isDestroy()) {
+            throw new AppException(ErrorCode.ACCOUNT_IS_DELETED);
+        }
+
+
         return LoginResponse.builder()
                 .accessToken(jwtService.generateAccessToken(account))
                 .refreshToken(jwtService.generateRefreshToken(account))
@@ -106,7 +115,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // Gửi email cho người dùng xác thực tài khoản
 
         // Tạo verificationLink với email và code động
-        String verificationLink = "http://localhost:8080/v1/auth/verifications?email=" + createdAccount.getEmail() + "&code=" + createdAccount.getVerifyCode();
+        String verificationLink = "http://localhost:5173/account/verification?email=" + createdAccount.getEmail() + "&code=" + createdAccount.getVerifyCode();
 
         // Gửi email với verificationLink
         mailerSendService.sendEmail(
@@ -161,8 +170,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public AccountResponse verifyAccount(String email, String code) {
-        Account exsitedAccount = accountRepository.findByEmail(email).orElseThrow(
+    public AccountResponse verifyAccount(VerificationAccountRequest request) {
+        Account exsitedAccount = accountRepository.findByEmail(request.getEmail()).orElseThrow(
                 () -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND)
         );
 
@@ -170,7 +179,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AppException(ErrorCode.ACCOUNT_IS_ACTIVE);
         }
 
-        if (!exsitedAccount.getVerifyCode().equals(code)) {
+        if (!exsitedAccount.getVerifyCode().equals(request.getCode())) {
             throw new AppException(ErrorCode.VERIFY_CODE_NOT_MATCH);
         }
 

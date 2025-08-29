@@ -52,12 +52,9 @@ public class AuthenticationController {
                 .build();
     }
 
-    @PostMapping("/verification")
-    APIResponse<AccountResponse> verifyAccount(
-            @RequestParam(required = true) String email,
-            @RequestParam(required = true) String code
-    ) {
-        var result = authenticationService.verifyAccount(email, code);
+    @PutMapping("/verify")
+    APIResponse<AccountResponse> verifyAccount(@RequestBody @Valid VerificationAccountRequest request) {
+        var result = authenticationService.verifyAccount(request);
         return APIResponse.<AccountResponse>builder()
                 .data(result)
                 .build();

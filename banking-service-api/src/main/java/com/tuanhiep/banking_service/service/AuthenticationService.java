@@ -17,5 +17,5 @@ public interface AuthenticationService {
 
     RefreshTokenResponse refreshToken(RefreshTokenRequest refreshTokenRequest) throws ParseException, JOSEException;
 
-    AccountResponse verifyAccount(String email, String code);
+    AccountResponse verifyAccount(VerificationAccountRequest request);
 }

@@ -1,5 +1,6 @@
 package com.tuanhiep.banking_service.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -12,13 +13,14 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AccountResponse {
+    private String email;
     String accountId;
     String customerName;
     String phoneNumber;
     String verifyCode;
-    boolean isActive;
-    boolean isDestroy;
+    boolean active;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
     Set<RoleResponse> roles;

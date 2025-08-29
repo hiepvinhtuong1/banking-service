@@ -21,7 +21,7 @@ public class MailerSendServiceImpl implements MailerSendService {
     public void sendEmail(String toEmail, String toName, String subject, String textContent, String htmlContent) {
         MailerSend mailerSend = new MailerSend();
         mailerSend.setToken(apiToken);
-
+        System.out.println("apiToken: "+apiToken);
         Email email = new Email();
         email.setFrom(fromName, fromEmail);  // Set sender
         email.addRecipient(toName, toEmail);  // Set recipient (có thể thêm nhiều bằng cách gọi lại)
