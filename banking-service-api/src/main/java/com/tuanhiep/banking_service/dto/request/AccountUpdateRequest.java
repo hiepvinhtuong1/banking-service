@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class AccountCreationRequest {
+public class AccountUpdateRequest {
 
     @NotBlank(message = "EMAIL_NOT_BLANK")
     @Email(message = "INVALID_EMAIL") // check theo chuẩn RFC 5322 cơ bản
@@ -36,7 +36,12 @@ public class AccountCreationRequest {
     )
     String password;
 
-    Integer  userLevelId;
+    @NotBlank(message = "CUSTOMER_NAME_NOT_BLANK")
+    String customerName;
 
-    String roleName;
+    @NotBlank(message = " USER_LEVEL_NOT_BLANK")
+    Integer  level;
+
+    @NotBlank(message = "ROLE_NOT_BLANK")
+    String role;
 }

@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "accounts")
@@ -45,4 +46,16 @@ public class Account extends BaseEntity {
 
     @ManyToMany
     Set<Role> roles;
+
+    // Mỗi Account chỉ thuộc về 1 UserLevel
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_level_id") // FK trong bảng Account
+    private UserLevel userLevel;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<Card> cards = new HashSet<>();
+
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Balance balance;
+
 }

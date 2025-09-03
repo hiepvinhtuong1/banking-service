@@ -24,4 +24,6 @@ public class AccountResponse {
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
     Set<RoleResponse> roles;
+    UserLevelResponse userLevel;
+    Set<CardResponse> cards;
 }
