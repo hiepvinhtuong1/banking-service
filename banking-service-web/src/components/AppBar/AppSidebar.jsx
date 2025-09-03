@@ -18,7 +18,7 @@ const menuItems = [
 	{ text: "Account", icon: <PeopleIcon />, path: "/account" },
 	{ text: "Card", icon: <CreditCardIcon />, path: "/card" },
 	{ text: "Transaction", icon: <SwapHorizIcon />, path: "/transaction" },
-	{ text: "UserLevel", icon: <StarIcon />, path: "/userlevel" },
+	{ text: "User Level", icon: <StarIcon />, path: "/user-level" },
 ];
 
 export default function AppSidebar() {

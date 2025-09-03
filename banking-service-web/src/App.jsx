@@ -12,7 +12,13 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "~/layouts/MainLayout";
 import Dashboard from "~/pages/Dashboard/Dashboard";
-import AccountManagement from "~/pages/Account/AccountManagement";
+import Accounts from "~/pages/Accounts/Accounts";
+import CreateAccountForm from "~/pages/Accounts/CreateAccountForm";
+import UpdateAccountForm from "./pages/Accounts/UpdateAccountForm";
+import UserLevels from "./pages/UserLevel/UserLevels";
+import CreateUserLevelForm from "./pages/UserLevel/CreateUserLevelForm";
+import Account from "./pages/Accounts/Account";
+import CreateCardForm from "./pages/Cards/CreateCardForm";
 const ProtectedRoute = ({ user }) => {
 	if (!user) {
 		return <Navigate to="/login" replace="true" />;
@@ -38,15 +44,26 @@ function App() {
 			<Route element={<ProtectedRoute user={currentUser} />}>
 				<Route path="/" element={<MainLayout />}>
 					<Route index element={<Dashboard />} />
-					<Route path="account" element={<AccountManagement />} />
+					<Route path="account" element={<Accounts />} />
+					<Route path="account/:accountId" element={<Account />} />
+					<Route
+						path="account/create"
+						element={<CreateAccountForm />}
+					/>
+					<Route
+						path="account/update/:accountId"
+						element={<UpdateAccountForm />}
+					/>
 					<Route path="card" element={<div>Card Page</div>} />
+					<Route path="card/new" element={<CreateCardForm />} />
 					<Route
 						path="transaction"
 						element={<div>Transaction Page</div>}
 					/>
+					<Route path="user-level" element={<UserLevels />} />
 					<Route
-						path="userlevel"
-						element={<div>UserLevel Page</div>}
+						path="user-level/create"
+						element={<CreateUserLevelForm />}
 					/>
 				</Route>
 			</Route>
