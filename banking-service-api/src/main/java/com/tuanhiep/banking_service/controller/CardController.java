@@ -49,4 +49,34 @@ public class CardController {
                 .build();
     }
 
+    @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public APIResponse<Page<CardResponse>> getAllCards(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "8") int size,
+            @RequestParam(required = false) String numberCard,
+            @RequestParam(required = false) String userName
+    ) {
+        Pageable pageable = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC, "createdAt") );
+
+        return APIResponse.<Page<CardResponse>>builder()
+                .data(cardService.getAllCards(numberCard, userName, pageable))
+                .build();
+    }
+
+    @GetMapping("/{cardId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    APIResponse<CardResponse> getCard(@PathVariable("cardId") String cardId) {
+        return APIResponse.<CardResponse>builder()
+                .data(cardService.getCard(cardId))
+                .build();
+    }
+
+
+    @GetMapping("card-number/{cardNumber}")
+    APIResponse<CardResponse> getCardByCardNumber(@PathVariable("cardNumber") String cardNumber) {
+        return APIResponse.<CardResponse>builder()
+                .data(cardService.getCardByCardNumber(cardNumber))
+                .build();
+    }
 }

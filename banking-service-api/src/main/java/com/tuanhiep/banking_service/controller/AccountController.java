@@ -12,7 +12,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 
 @RestController
@@ -23,7 +28,19 @@ public class AccountController {
     private AccountServiceImpl accountService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     APIResponse<AccountResponse> createNewAccount(@RequestBody @Valid AccountCreationRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+// Lấy username
+        String username = authentication.getName();
+
+// Lấy quyền
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        for (GrantedAuthority authority : authorities) {
+            System.out.println("ROLE = " + authority.getAuthority());
+        }
+
         return APIResponse.<AccountResponse>builder()
                 .data(accountService.createNew(request))
                 .build();

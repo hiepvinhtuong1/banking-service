@@ -6,11 +6,12 @@ import lombok.Getter;
 public enum ErrorCode {
     // 1000 - Authentication
     UNAUTHENTICATED(1001, "Unauthenticated"),
+    UNAUTHORIZED(1006, "Unthorized" ),
     TOKEN_EXPIRED_EXCEPTION(1002, "Token expired exception"),
     TOKEN_CANNOT_CREATE_EXCEPTION(1003,"Token can not create exception" ),
     EMAIL_OR_PASSWORD_NOT_MATCH(1004, "Email or password is incorrect"),
     ACCESS_TOKEN_STILL_VALID(1005,"Access token is still valid"),
-
+    FORBIDDEN(1007,"Forbidden" ),
     // 2000 - Account
     ACCOUNT_EMAIL_EXISTED(2001, "Email existed"),
     ACCOUNT_PHONE_NUMBER_EXISTED(2002, "Phone number existed"),

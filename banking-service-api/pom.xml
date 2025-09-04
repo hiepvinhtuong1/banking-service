@@ -90,6 +90,14 @@
 			<artifactId>java-sdk</artifactId>
 			<version>1.4.1</version>  <!-- Phiên bản mới nhất, kiểm tra GitHub để cập nhật -->
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-activemq</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

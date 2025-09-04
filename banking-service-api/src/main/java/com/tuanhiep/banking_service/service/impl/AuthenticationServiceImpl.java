@@ -58,7 +58,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var account = accountRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
 
-        if (!passwordEncoder.matches(request.getPassword(), account.getPassword())){
+            if (!passwordEncoder.matches(request.getPassword(), account.getPassword())){
             throw new AppException(ErrorCode.EMAIL_OR_PASSWORD_NOT_MATCH);
         }
 

@@ -1,10 +1,13 @@
 package com.tuanhiep.banking_service.exception;
 
 import com.tuanhiep.banking_service.dto.response.APIResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.nio.file.AccessDeniedException;
 
 @ControllerAdvice
 /**
@@ -43,4 +46,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
 
     }
+
+    @ExceptionHandler({AccessDeniedException.class, org.springframework.security.authorization.AuthorizationDeniedException.class})
+    public ResponseEntity<APIResponse> handleAccessDenied(Exception e) {
+        APIResponse response = new APIResponse();
+        response.setCode(ErrorCode.FORBIDDEN.getCode());
+        response.setMessage("Bạn không có quyền truy cập tài nguyên này");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
 }

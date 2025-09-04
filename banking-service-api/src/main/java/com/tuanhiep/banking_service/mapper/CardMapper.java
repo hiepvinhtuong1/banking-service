@@ -9,5 +9,10 @@ import org.mapstruct.Mapping;
 public interface CardMapper {
 
     @Mapping(source = "account.accountId", target = "accountId")
+    @Mapping(source = "account.email", target = "email")
+    @Mapping(source = "account.customerName", target = "customerName")
+    @Mapping(source = "account.phoneNumber", target = "phoneNumber")
     CardResponse toCardResponse(Card card);
+
+
 }

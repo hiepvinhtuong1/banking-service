@@ -15,7 +15,7 @@ import java.util.Set;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AccountResponse {
-    private String email;
+    String email;
     String accountId;
     String customerName;
     String phoneNumber;
@@ -26,4 +26,5 @@ public class AccountResponse {
     Set<RoleResponse> roles;
     UserLevelResponse userLevel;
     Set<CardResponse> cards;
+    BalanceResponse balance;
 }

@@ -21,7 +21,8 @@ public class CardResponse {
     CardType cardType;
     LocalDate expiryDate;
     CardStatus status;
-
-    // để hiển thị thêm thông tin account (chỉ ID để tránh vòng lặp)
+    String email;
     String accountId;
+    String customerName;
+    String phoneNumber;
 }

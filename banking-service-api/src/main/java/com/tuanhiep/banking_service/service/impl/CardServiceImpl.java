@@ -6,18 +6,18 @@ import com.tuanhiep.banking_service.entity.Account;
 import com.tuanhiep.banking_service.entity.Card;
 import com.tuanhiep.banking_service.entity.UserLevel;
 import com.tuanhiep.banking_service.enums.CardStatus;
-import com.tuanhiep.banking_service.enums.CardType;
 import com.tuanhiep.banking_service.exception.AppException;
 import com.tuanhiep.banking_service.exception.ErrorCode;
 import com.tuanhiep.banking_service.mapper.CardMapper;
 import com.tuanhiep.banking_service.repository.AccountRepository;
 import com.tuanhiep.banking_service.repository.CardRepository;
 import com.tuanhiep.banking_service.service.CardService;
+import com.tuanhiep.banking_service.service.impl.specification.CardSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -61,6 +61,39 @@ public class CardServiceImpl implements CardService {
                 .build();
 
         return cardMapper.toCardResponse(cardRepository.save(card));
+    }
+
+    @Override
+    public Page<CardResponse> getAllCards(String numberCard, String userName, Pageable pageable) {
+        return cardRepository.findAll(
+                        CardSpecification.filter(numberCard, userName),
+                        pageable
+                )
+                .map(cardMapper::toCardResponse);
+    }
+
+    @Override
+    public CardResponse getCard(String cardId) {
+        var card = cardRepository.findById(cardId)
+                .orElseThrow(() -> new AppException(ErrorCode.CARD_NOT_FOUND));
+
+        if (!CardStatus.ACTIVE.toString().equalsIgnoreCase(card.getStatus().toString())) {
+            throw new AppException(ErrorCode.CARD_IS_INACTIVE);
+        }
+
+        return cardMapper.toCardResponse(card);
+    }
+
+    @Override
+    public CardResponse getCardByCardNumber(String cardNumber) {
+        var card = cardRepository.findCardByCardNumber(cardNumber)
+                .orElseThrow(() -> new AppException(ErrorCode.CARD_NOT_FOUND));
+
+        if (!CardStatus.ACTIVE.toString().equalsIgnoreCase(card.getStatus().toString())) {
+            throw new AppException(ErrorCode.CARD_IS_INACTIVE);
+        }
+
+        return cardMapper.toCardResponse(card);
     }
 
 

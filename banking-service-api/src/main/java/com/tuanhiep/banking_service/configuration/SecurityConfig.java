@@ -1,12 +1,10 @@
 package com.tuanhiep.banking_service.configuration;
 
-import com.nimbusds.jose.Algorithm;
-import com.nimbusds.jwt.JWT;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,6 +20,7 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
 
@@ -37,7 +36,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity,  CustomJwtDecoder customJwtDecoder) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity,  CustomJwtDecoder customJwtDecoder, CustomAccessDeniedHandler accessDeniedHandler) throws Exception {
         httpSecurity
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(request -> request
@@ -53,6 +52,9 @@ public class SecurityConfig {
                                 .decoder(customJwtDecoder)
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint) // Đảm bảo EntryPoint được gọi
+                )
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler(accessDeniedHandler) // 👈 bắt AccessDeniedException
                 )
                 .csrf(AbstractHttpConfigurer::disable);
         return httpSecurity.build();
