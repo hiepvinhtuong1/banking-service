@@ -14,11 +14,15 @@ import StarIcon from "@mui/icons-material/Star";
 import { Link } from "react-router-dom";
 
 const menuItems = [
-	{ text: "Dashboard", icon: <DashboardIcon />, path: "/" },
-	{ text: "Account", icon: <PeopleIcon />, path: "/account" },
-	{ text: "Card", icon: <CreditCardIcon />, path: "/card" },
-	{ text: "Transaction", icon: <SwapHorizIcon />, path: "/transaction" },
-	{ text: "User Level", icon: <StarIcon />, path: "/user-level" },
+	{ text: "Dashboard", icon: <DashboardIcon />, path: "/admin" },
+	{ text: "Account", icon: <PeopleIcon />, path: "/admin/account" },
+	{ text: "Card", icon: <CreditCardIcon />, path: "/admin/card" },
+	{
+		text: "Transaction",
+		icon: <SwapHorizIcon />,
+		path: "/admin/transaction",
+	},
+	{ text: "User Level", icon: <StarIcon />, path: "/admin/user-level" },
 ];
 
 export default function AppSidebar() {

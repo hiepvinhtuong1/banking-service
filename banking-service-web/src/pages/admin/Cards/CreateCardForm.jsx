@@ -11,12 +11,7 @@ import {
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import {
-	Link,
-	Link as RouterLink,
-	useNavigate,
-	useSearchParams,
-} from "react-router-dom";
+import { Link, Link as RouterLink, useNavigate } from "react-router-dom";
 import FieldErrorAlert from "~/components/Form/FieldErrorAlert";
 import {
 	createNewCardAPI,

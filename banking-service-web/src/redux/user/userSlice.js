@@ -56,12 +56,16 @@ export const logoutUserAPI = createAsyncThunk(
             refreshToken
         });
 
+        // clear token ở localStorage
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
 
         if (showSuccessMessage) {
             toast.success('Logged out successfully')
         }
     }
 )
+
 
 // export const updateUserAPI = createAsyncThunk(
 //     'account/updateUserAPI',

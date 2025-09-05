@@ -101,34 +101,32 @@ function Account() {
 						</Table>
 					</TableContainer>
 				</Box>
-				{cards?.length === 0 && (
-					<Typography
-						variant="span"
-						sx={{ fontWeight: "bold", mb: 3 }}
+
+				<Box>
+					<Stack
+						direction="row"
+						justifyContent="space-between"
+						alignItems="center"
+						sx={{ mb: 2 }}
 					>
-						No result found!
-					</Typography>
-				)}
-				{/* User cards */}
-
-				{cards?.length > 0 && (
-					<Box>
-						<Stack
-							direction="row"
-							justifyContent="space-between"
-							alignItems="center"
-							sx={{ mb: 2 }}
+						<Typography variant="h6">User Cards</Typography>
+						<Button
+							variant="contained"
+							color="primary"
+							onClick={() => navigate("/card/new")}
 						>
-							<Typography variant="h6">User Cards</Typography>
-							<Button
-								variant="contained"
-								color="primary"
-								onClick={() => navigate("/card/new")}
-							>
-								Create Card
-							</Button>
-						</Stack>
-
+							Create Card
+						</Button>
+					</Stack>
+					{cards?.length === 0 && (
+						<Typography
+							variant="span"
+							sx={{ fontWeight: "bold", mb: 3 }}
+						>
+							No result found!
+						</Typography>
+					)}
+					{cards?.length > 0 && (
 						<Grid container spacing={4}>
 							{cards.map((card) => (
 								<Grid xs={2} sm={3} md={4} key={card}>
@@ -157,7 +155,7 @@ function Account() {
 												size="small"
 												onClick={() =>
 													navigate(
-														`/card/${card.cardNumber}`
+														`/card/${card?.cardId}`
 													)
 												}
 											>
@@ -168,8 +166,9 @@ function Account() {
 								</Grid>
 							))}
 						</Grid>
-					</Box>
-				)}
+					)}
+					{/* User cards */}
+				</Box>
 
 				<Button
 					variant="contained"

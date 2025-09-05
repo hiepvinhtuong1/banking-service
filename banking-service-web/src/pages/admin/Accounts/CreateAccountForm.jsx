@@ -25,7 +25,7 @@ import {
 } from "~/utils/validators";
 import FieldErrorAlert from "~/components/Form/FieldErrorAlert";
 import { Link, Link as RouterLink, useNavigate } from "react-router-dom";
-import { createNewAccountAPI } from "../../apis";
+import { createNewAccountAPI } from "../../../apis";
 function CreateAccountForm() {
 	const navigate = useNavigate();
 	const {
