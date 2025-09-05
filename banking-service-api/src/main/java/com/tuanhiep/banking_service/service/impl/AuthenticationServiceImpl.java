@@ -6,14 +6,13 @@ import com.nimbusds.jwt.SignedJWT;
 import com.tuanhiep.banking_service.dto.request.*;
 import com.tuanhiep.banking_service.dto.response.*;
 import com.tuanhiep.banking_service.entity.Account;
+import com.tuanhiep.banking_service.entity.Balance;
 import com.tuanhiep.banking_service.entity.InvalidatedToken;
 import com.tuanhiep.banking_service.entity.Role;
 import com.tuanhiep.banking_service.exception.AppException;
 import com.tuanhiep.banking_service.exception.ErrorCode;
 import com.tuanhiep.banking_service.mapper.AccountMapper;
-import com.tuanhiep.banking_service.repository.AccountRepository;
-import com.tuanhiep.banking_service.repository.InvalidatedTokenRepository;
-import com.tuanhiep.banking_service.repository.RoleRepository;
+import com.tuanhiep.banking_service.repository.*;
 import com.tuanhiep.banking_service.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -40,6 +40,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
     private InvalidatedTokenRepository invalidatedTokenRepository;
+
+    @Autowired
+    private UserLeveLRepository userLeveLRepository;
+
+    @Autowired
+    private BalanceRepository balanceRepository;
 
     @Autowired
     MailerSendServiceImpl mailerSendService;
@@ -92,6 +98,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Account newAccount = accountMapper.toAccount(request);
         newAccount.setCustomerName(request.getEmail().split("@")[0]);
 
+        // UserLevel
+        Integer userLevelId = request.getUserLevelId();
+        if (userLevelId == null) {
+            userLevelId = 1; // mặc định
+        } else if (!userLeveLRepository.existsById(userLevelId)) {
+            throw new AppException(ErrorCode.USER_LEVEL_NOT_FOUND);
+        }
+        newAccount.setUserLevel(userLeveLRepository.findById(userLevelId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_LEVEL_NOT_FOUND)));
 
         newAccount.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -103,12 +118,30 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         newAccount.setRoles(roles);
 
         newAccount.setVerifyCode(UUID.randomUUID().toString());
+
         Account createdAccount = null;
+
         try {
             createdAccount  = accountRepository.save(newAccount);
         } catch (DataIntegrityViolationException e) {
             throw new AppException(ErrorCode.ACCOUNT_EMAIL_EXISTED);
         }
+
+        // 👉 Save Account trước
+        Account savedAccount = accountRepository.save(newAccount);
+
+        // 👉 Khởi tạo Balance mặc định
+        Balance balance = new Balance();
+        balance.setAvailableBalance(BigDecimal.ZERO);
+        balance.setHoldBalance(BigDecimal.ZERO);
+        balance.setCreatedAt(LocalDateTime.now());
+        balance.setUpdatedAt(LocalDateTime.now());
+        balance.setAccount(savedAccount);
+
+        balanceRepository.save(balance);
+
+        // 👉 Gắn balance lại vào account để mapping đầy đủ
+        savedAccount.setBalance(balance);
 
 
 

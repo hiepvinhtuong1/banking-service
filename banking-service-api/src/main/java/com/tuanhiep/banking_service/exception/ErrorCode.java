@@ -67,6 +67,29 @@ public enum ErrorCode {
     USER_LEVEL_NUMBER_OF_CARDS_NOT_NULL(5006,"Number of cards can not be null"),
     USER_LEVEL_DAILY_AMOUNT_NOT_NULL(5006,"Daily transaction amount can not be null"),
 
+    // 6000 - Transaction
+    TRANSACTION_NOT_FOUND(6001, "Transaction not found"),
+    FROM_CARD_NUMBER_NOT_BLANK(6002, "From card number cannot be blank"),
+    TO_CARD_NUMBER_NOT_BLANK(6003, "To card number cannot be blank"),
+    INVALID_FROM_CARD_NUMBER_FORMAT(6004, "From card number must contain only digits"),
+    INVALID_TO_CARD_NUMBER_FORMAT(6005, "To card number must contain only digits"),
+    AMOUNT_NOT_NULL(6006, "Amount cannot be null"),
+    AMOUNT_GREATER_THAN_ZERO(6007, "Amount must be greater than 0"),
+    TRANSACTION_TYPE_NOT_NULL(6008, "Transaction type cannot be null"),
+    TRANSACTION_STATUS_NOT_NULL(6009, "Transaction status cannot be null"),
+    ACCOUNT_NOT_NULL_FOR_TRANSACTION(6010, "Account cannot be null for transaction"),
+    FROM_TO_CARD_CANNOT_BE_SAME(6011, "From card and To card cannot be the same"),
+    ACCOUNT_ID_NOT_BLANK(6012,"Account id not blank"),
+    FROM_CARD_NOT_FOUND(6013,"From card is not found" ),
+    TO_CARD_NOT_FOUND(6014,"To card is not found" ),
+    FROM_CARD_INACTIVE(6015,"From card is not active"),
+    TO_CARD_INACTIVE(6016,"To card is not active"),
+    FROM_CARD_EXPIRED(6017, "FROM CARD EXPIRED"),
+    TO_CARD_EXPIRED(6017, "TO CARD EXPIRED"),
+    INSUFFICIENT_BALANCE(6019, "Balance is not sufficient"),
+    DAILY_TRANSACTION_LIMIT_EXCEEDED(6020, "Daily transaction limit is exceeded"),
+    OTP_CODE_NOT_BLANK(6021,"Otp code is not blank"),
+    INVALID_OR_EXPIRED_OTP(6022,"Invalid or expired otp" ),
     // 9000 - System
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error");
 

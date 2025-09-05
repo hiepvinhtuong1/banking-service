@@ -1,6 +1,7 @@
 package com.tuanhiep.banking_service.service.impl;
 
 
+import com.tuanhiep.banking_service.dto.request.VerifyOTPRequest;
 import com.tuanhiep.banking_service.service.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -28,13 +29,13 @@ public class OtpServiceImpl implements OtpService {
     }
 
     @Override
-    public boolean validateOtp(String email, String otp) {
-        String storedOtp = redisTemplate.opsForValue().get(OTP_PREFIX + email);
-        if (storedOtp == null || !storedOtp.equals(otp)) {
+    public boolean validateOtp(VerifyOTPRequest request) {
+        String storedOtp = redisTemplate.opsForValue().get(OTP_PREFIX + request.getEmail());
+        if (storedOtp == null || !storedOtp.equals(request.getOtpCode())) {
             return false;
         }
         // Xóa OTP sau khi xác thực
-        redisTemplate.delete(OTP_PREFIX + email);
+        redisTemplate.delete(OTP_PREFIX + request.getEmail());
         return true;
     }
 
