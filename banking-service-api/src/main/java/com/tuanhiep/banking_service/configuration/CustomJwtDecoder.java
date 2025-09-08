@@ -1,6 +1,7 @@
 package com.tuanhiep.banking_service.configuration;
 
 import com.nimbusds.jose.JOSEException;
+import com.tuanhiep.banking_service.exception.AppException;
 import com.tuanhiep.banking_service.service.JwtService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -29,23 +30,28 @@ public class CustomJwtDecoder implements JwtDecoder {
     public CustomJwtDecoder(JwtService jwtService) {
         this.jwtService = jwtService;
     }
-
+    @Override
     public Jwt decode(String token) throws JwtException {
         try {
-            // ✅ Gọi phương thức verifyToken trực tiếp nếu không cần dùng SignedJWT
             jwtService.verifyToken(token, false);
+        } catch (AppException ex) {
+            // Gắn AppException vào request
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            if (attributes != null) {
+                attributes.getRequest().setAttribute("exception", ex);
+            }
+            throw new JwtException(ex.getMessage(), ex);
         } catch (JOSEException | ParseException e) {
-            // Gắn exception vào request để JwtAuthenticationEntryPoint xử lý
+            // Các lỗi parse/verify từ thư viện JOSE
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             if (attributes != null) {
                 attributes.getRequest().setAttribute("exception", e);
             }
-            // Ném JwtException để Spring Security gọi AuthenticationEntryPoint
             throw new JwtException(e.getMessage(), e);
         }
 
         if (Objects.isNull(nimbusJwtDecoder)) {
-            SecretKeySpec secretKeySpec = new SecretKeySpec(accessTokenSignerKey.getBytes(),"HS512");
+            SecretKeySpec secretKeySpec = new SecretKeySpec(accessTokenSignerKey.getBytes(), "HS512");
             nimbusJwtDecoder = NimbusJwtDecoder
                     .withSecretKey(secretKeySpec)
                     .macAlgorithm(MacAlgorithm.HS512)
@@ -53,5 +59,5 @@ public class CustomJwtDecoder implements JwtDecoder {
         }
 
         return nimbusJwtDecoder.decode(token);
-    }
-}
+    }}
+

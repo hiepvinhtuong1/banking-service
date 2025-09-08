@@ -20,8 +20,8 @@ export const verifyAccountAPI = async (data) => {
     return response.data.data; // Trả về AccountResponse
 };
 
-export const refreshTokenAPI = async (refreshToken) => {
-    const response = await authorizedAxiosInstance.post(`/v1/auth/refresh-token`, { refreshToken });
+export const refreshTokenAPI = async (data) => {
+    const response = await authorizedAxiosInstance.post(`/v1/auth/refresh-token`, data);
     return response.data.data; // Trả về RefreshTokenResponse { accessToken, refreshToken }
 };
 

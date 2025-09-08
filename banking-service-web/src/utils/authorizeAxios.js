@@ -35,6 +35,7 @@ const publicEndpoints = [
     '/auth/login',
     '/auth/register',
     '/auth/verify',
+    'auth/refresh-token'
 ];
 
 /**
@@ -51,7 +52,11 @@ authorizedAxiosInstance.interceptors.request.use(
             if (accessToken) {
                 config.headers.Authorization = `Bearer ${accessToken}`;
             } else {
-                return Promise.reject(new Error('No access token found. Please login.'));
+                return Promise.reject({
+                    message: 'No access token found. Please login.',
+                    code: 1001
+                });
+
             }
         }
         return config;
@@ -77,12 +82,14 @@ authorizedAxiosInstance.interceptors.response.use(
         return response;
     },
     async (error) => {
+        console.log("🚀 ~ error:", error)
         interceptorLoadingElements(false); // Tắt loading
 
         const originalRequest = error.config;
 
         // Xử lý lỗi HTTP 401 từ Spring Boot
         if (error.response?.status === 401 && !originalRequest._retry) {
+            console.log("tôi đã đến đâyy")
             const errorCode = error.response?.data?.code;
 
             // Trường hợp 1: UNAUTHENTICATED (code: 1001) -> Logout ngay
@@ -90,17 +97,21 @@ authorizedAxiosInstance.interceptors.response.use(
                 localStorage.removeItem('access_token');
                 localStorage.removeItem('refresh_token');
                 axiosReduxStore.dispatch(logoutUserAPI(false));
-                window.location.href = '/login';
+                location.href = '/login';
                 return Promise.reject(error);
             }
 
             // Trường hợp 2: TOKEN_EXPIRED_EXCEPTION (code: 1002) -> Gọi refresh token
             if (errorCode === 1002) {
+                console.log("tôi đã gọi refresh token")
                 originalRequest._retry = true;
+
+                const accessToken = localStorage.getItem('access_token');
                 const refreshToken = localStorage.getItem('refresh_token');
+
                 if (refreshToken) {
                     if (!refreshTokenPromise) {
-                        refreshTokenPromise = refreshTokenAPI(refreshToken)
+                        refreshTokenPromise = refreshTokenAPI({ accessToken, refreshToken })
                             .then((data) => {
                                 const newAccessToken = data?.accessToken;
                                 if (data?.refreshToken) {
@@ -112,8 +123,8 @@ authorizedAxiosInstance.interceptors.response.use(
                             .catch(() => {
                                 localStorage.removeItem('access_token');
                                 localStorage.removeItem('refresh_token');
-                                axiosReduxStore.dispatch(logoutAccountAPI(false));
-                                window.location.href = '/login';
+                                axiosReduxStore.dispatch(logoutUserAPI(false));
+                                location.href = '/login';
                             })
                             .finally(() => {
                                 refreshTokenPromise = null;
@@ -126,7 +137,7 @@ authorizedAxiosInstance.interceptors.response.use(
                 } else {
                     localStorage.removeItem('access_token');
                     axiosReduxStore.dispatch(logoutUserAPI(false));
-                    window.location.href = '/login';
+                    location.href = '/login';
                     return Promise.reject(error);
                 }
             }

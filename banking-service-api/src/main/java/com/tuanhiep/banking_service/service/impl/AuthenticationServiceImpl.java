@@ -14,6 +14,8 @@ import com.tuanhiep.banking_service.exception.ErrorCode;
 import com.tuanhiep.banking_service.mapper.AccountMapper;
 import com.tuanhiep.banking_service.repository.*;
 import com.tuanhiep.banking_service.service.AuthenticationService;
+import com.tuanhiep.banking_service.service.MailService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -49,6 +51,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
     MailerSendServiceImpl mailerSendService;
+
+    @Autowired
+    MailService mailService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -110,25 +115,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         newAccount.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        Role role = roleRepository.findById("USER").orElseThrow(() -> new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION));
+        Role role = roleRepository.findById("USER")
+                .orElseThrow(() -> new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION));
 
         HashSet<Role> roles = new HashSet<>();
         roles.add(role);
-
         newAccount.setRoles(roles);
 
         newAccount.setVerifyCode(UUID.randomUUID().toString());
 
-        Account createdAccount = null;
-
+        Account createdAccount;
         try {
-            createdAccount  = accountRepository.save(newAccount);
+            createdAccount = accountRepository.save(newAccount);
         } catch (DataIntegrityViolationException e) {
             throw new AppException(ErrorCode.ACCOUNT_EMAIL_EXISTED);
         }
-
-        // 👉 Save Account trước
-        Account savedAccount = accountRepository.save(newAccount);
 
         // 👉 Khởi tạo Balance mặc định
         Balance balance = new Balance();
@@ -136,37 +137,40 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         balance.setHoldBalance(BigDecimal.ZERO);
         balance.setCreatedAt(LocalDateTime.now());
         balance.setUpdatedAt(LocalDateTime.now());
-        balance.setAccount(savedAccount);
+        balance.setAccount(createdAccount);
 
         balanceRepository.save(balance);
 
-        // 👉 Gắn balance lại vào account để mapping đầy đủ
-        savedAccount.setBalance(balance);
+        createdAccount.setBalance(balance);
 
+        // 👉 Tạo verificationLink
+        String verificationLink = "http://localhost:5173/account/verification?email="
+                + createdAccount.getEmail()
+                + "&code="
+                + createdAccount.getVerifyCode();
 
+        // 👉 Gửi mail xác thực
+        String subject = "Xác thực tài khoản của bạn";
+        String textBody = "Vui lòng nhấp vào liên kết sau để xác thực tài khoản: " + verificationLink;
+        String htmlBody = "<h1>Xác thực tài khoản</h1><p>Vui lòng nhấp vào liên kết sau để xác thực tài khoản của bạn: " +
+                "<a href='" + verificationLink + "'>Xác thực ngay</a></p>";
 
-        // Gửi email cho người dùng xác thực tài khoản
-
-        // Tạo verificationLink với email và code động
-        String verificationLink = "http://localhost:5173/account/verification?email=" + createdAccount.getEmail() + "&code=" + createdAccount.getVerifyCode();
-
-        // Gửi email với verificationLink
-        mailerSendService.sendEmail(
-                createdAccount.getEmail(),
-                createdAccount.getCustomerName(),
-                "Xác thực tài khoản của bạn",
-                "Vui lòng nhấp vào liên kết sau để xác thực tài khoản: " + verificationLink,
-                "<h1>Xác thực tài khoản</h1><p>Vui lòng nhấp vào liên kết sau để xác thực tài khoản của bạn: <a href='" + verificationLink + "'>Xác thực ngay</a></p>"
-        );
+        try {
+            mailService.sendHtmlMail(createdAccount.getEmail(), subject, htmlBody);
+        } catch (MessagingException e) {
+            // fallback gửi text nếu lỗi
+            mailService.sendTextMail(createdAccount.getEmail(), subject, textBody);
+        }
 
         return accountMapper.toAccountResponse(createdAccount);
     }
+
 
     @Override
     public RefreshTokenResponse refreshToken(RefreshTokenRequest refreshTokenRequest) throws ParseException, JOSEException {
         // check access token is expired
 
-        SignedJWT signedJWTAccessToken = jwtService.getSignedJWT(refreshTokenRequest.getAccessToken(), false);
+            SignedJWT signedJWTAccessToken = jwtService.getSignedJWT(refreshTokenRequest.getAccessToken(), false);
 
         if (signedJWTAccessToken.getJWTClaimsSet().getExpirationTime().after(new Date())) {
             throw new AppException(ErrorCode.ACCESS_TOKEN_STILL_VALID);
