@@ -17,11 +17,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import static com.tuanhiep.banking_service.constant.Constants.ACCOUNT_KEY_PREFIX;
 
 @Service
 @RequiredArgsConstructor
 public class CardServiceImpl implements CardService {
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -59,6 +65,10 @@ public class CardServiceImpl implements CardService {
                 .status(request.getStatus())
                 .account(account)
                 .build();
+
+        // 🔥 Xóa cache Redis cũ
+        String key = ACCOUNT_KEY_PREFIX + account.getAccountId();
+        redisTemplate.delete(key);
 
         return cardMapper.toCardResponse(cardRepository.save(card));
     }

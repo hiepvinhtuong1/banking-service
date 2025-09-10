@@ -1,5 +1,7 @@
 package com.tuanhiep.banking_service.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.tuanhiep.banking_service.dto.request.AccountUpdateRequest;
 import com.tuanhiep.banking_service.dto.response.APIResponse;
 import com.tuanhiep.banking_service.dto.response.AccountResponse;
 import com.tuanhiep.banking_service.dto.response.TransactionResponse;
@@ -14,10 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -57,4 +57,42 @@ public class TransactionController {
                 .data(TransactionStatus.values())
                 .build();
     }
+
+    @PutMapping("/{transactionId}/approve")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public APIResponse<TransactionResponse> approveTransaction(@PathVariable String transactionId) throws JsonProcessingException {
+        return APIResponse.<TransactionResponse>builder()
+                .data(transactionService.approveTransaction(transactionId))
+                .build();
+    }
+
+    @PutMapping("/{transactionId}/reject")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public APIResponse<TransactionResponse> rejectTransaction(@PathVariable String transactionId) throws JsonProcessingException {
+        return APIResponse.<TransactionResponse>builder()
+                .data(transactionService.rejectTransaction(transactionId))
+                .build();
+    }
+
+    @GetMapping("/my-transactions")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public APIResponse<Page<TransactionResponse>> getMyTransactions(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String transactionId,
+
+            @RequestParam(required = false) String transactionType,
+            @RequestParam(required = false) String transactionStatus) {
+
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        // Lấy userId từ SecurityContext (người đang đăng nhập)
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return APIResponse.<Page<TransactionResponse>>builder()
+                .data(transactionService.getUserTransactions(pageable, transactionId, transactionType, transactionStatus, userId))
+                .build();
+    }
+
+
 }

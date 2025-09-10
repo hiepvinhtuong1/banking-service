@@ -30,7 +30,6 @@ public class TransactionResponse implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss dd-MM-yyyy")
     LocalDateTime updatedAt;
 
-
     TransactionType transactionType;
 
     TransactionStatus transactionStatus;

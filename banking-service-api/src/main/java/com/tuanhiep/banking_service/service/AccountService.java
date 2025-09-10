@@ -16,4 +16,6 @@ public interface AccountService {
     Page<AccountResponse> getAllAccounts(Pageable pageable, String customerName, String phoneNumber, String email);
 
     AccountResponse updateAccount(String accountId, AccountUpdateRequest request);
+
+    void deleteAccount(String accountId);
 }

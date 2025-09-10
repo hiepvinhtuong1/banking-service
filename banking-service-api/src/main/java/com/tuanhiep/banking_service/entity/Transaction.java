@@ -47,5 +47,9 @@ public class Transaction extends BaseEntity {
     // Lưu accountId thay vì object Account
     @NotBlank(message = "ErrorCode.ACCOUNT_ID_NOT_BLANK")
     @Column(nullable = false)
-    String accountId;
+    String fromAccountId;
+
+    @NotBlank(message = "ErrorCode.ACCOUNT_ID_NOT_BLANK")
+    @Column(nullable = false)
+    String toAccountId;
 }

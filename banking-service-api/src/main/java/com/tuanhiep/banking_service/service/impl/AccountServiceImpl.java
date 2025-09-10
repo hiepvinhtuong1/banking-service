@@ -23,12 +23,15 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
+
+import static com.tuanhiep.banking_service.constant.Constants.ACCOUNT_KEY_PREFIX;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -54,7 +57,6 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private static final String ACCOUNT_KEY_PREFIX = "account:";
 
 
     @Override
@@ -124,7 +126,6 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponse getAccount(String accountId) {
         String key = ACCOUNT_KEY_PREFIX + accountId;
 
-        // 1. Kiểm tra Redis
         Object cached = redisTemplate.opsForValue().get(key);
         if (cached != null) {
             AccountResponse response = objectMapper.convertValue(cached, AccountResponse.class);
@@ -179,5 +180,25 @@ public class AccountServiceImpl implements AccountService {
         return updated;
     }
 
+    @Transactional
+    public void deleteAccount(String accountId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
+
+        // Check số dư
+        if (account.getBalance() != null && account.getBalance().getAvailableBalance().compareTo(BigDecimal.ZERO) > 0) {
+            throw new AppException(ErrorCode.ACCOUNT_HAS_BALANCE);
+        }
+
+        // Check có thẻ không
+        if (account.getCards() != null && !account.getCards().isEmpty()) {
+            throw new AppException(ErrorCode.ACCOUNT_HAS_CARDS);
+        }
+
+        // Xóa mềm
+        account.setDestroy(true);
+        account.setActive(false);
+        accountRepository.save(account);
+    }
 
 }

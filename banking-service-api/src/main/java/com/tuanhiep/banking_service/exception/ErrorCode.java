@@ -35,6 +35,8 @@ public enum ErrorCode {
     ROLE_NOT_FOUND(2020,"Role not found"),
     ROLE_NOT_BLANK(2021,"Role is not blank"),
     USER_LEVEL_NOT_BLANK(2022,"User level is not blank"),
+    ACCOUNT_HAS_BALANCE(2023, "Account has balance" ),
+    ACCOUNT_HAS_CARDS(2024,"Account has cards"),
 
     // 3000 - Card
     CARD_NOT_FOUND(3001, "Card not found"),
@@ -90,8 +92,9 @@ public enum ErrorCode {
     DAILY_TRANSACTION_LIMIT_EXCEEDED(6020, "Daily transaction limit is exceeded"),
     OTP_CODE_NOT_BLANK(6021,"Otp code is not blank"),
     INVALID_OR_EXPIRED_OTP(6022,"Invalid or expired otp" ),
+    INVALID_TRANSACTION_STATUS_PENDING(6023,"Invalid transaction status pending" ),
     // 9000 - System
-    UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error");
+    UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error"),;
 
     private final int code;
     private final String message;

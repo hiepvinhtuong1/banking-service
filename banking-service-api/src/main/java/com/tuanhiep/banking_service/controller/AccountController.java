@@ -76,4 +76,14 @@ public class AccountController {
                 .data(accountService.updateAccount(accountId,request))
                 .build();
     }
+
+    @DeleteMapping("/{accountId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    APIResponse<String> deleteAccount(@PathVariable("accountId") String accountId) {
+        accountService.deleteAccount(accountId);
+        return APIResponse.<String>builder()
+                .data("Account deleted successfully (soft delete)")
+                .build();
+    }
+
 }

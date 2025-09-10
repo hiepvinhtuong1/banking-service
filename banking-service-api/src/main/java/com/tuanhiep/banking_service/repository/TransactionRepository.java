@@ -15,9 +15,9 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
 
     @Query("SELECT COALESCE(SUM(t.amount), 0) " +
             "FROM transactions t " +
-            "WHERE t.accountId = :accountId " +
+            "WHERE t.fromAccountId = :accountId " +
             "AND FUNCTION('DATE', t.createdAt) = :today " +
-            "AND t.transactionStatus = 'SUCCESS'")
+            "AND t.transactionStatus = 'PENDING'")
     BigDecimal sumTransactionAmountByAccountAndDate(@Param("accountId") String accountId,
                                                     @Param("today") LocalDate today);
 }

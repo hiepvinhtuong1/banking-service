@@ -25,9 +25,32 @@ public class TransactionSpecification {
                         criteriaBuilder.equal(root.get("transactionStatus"), TransactionStatus.valueOf(transactionStatus));
     }
 
+    public static Specification<Transaction> filterByAccountId(String accountId) {
+        return (root, query, criteriaBuilder) -> {
+            if (accountId == null || accountId.trim().isEmpty()) {
+                return null;
+            }
+            return criteriaBuilder.or(
+                    criteriaBuilder.equal(root.get("fromAccountId"), accountId),
+                    criteriaBuilder.equal(root.get("toAccountId"), accountId)
+            );
+        };
+    }
+
+
     public static Specification<Transaction> combineFilters(String transactionId, String transactionType, String transactionStatus) {
         return Specification.where(filterByTransactionId(transactionId))
                 .and(filterByTransactionType(transactionType))
                 .and(filterByTransactionStatus(transactionStatus));
+    }
+
+    public static Specification<Transaction> combineFilters(String transactionId,
+                                                            String transactionType,
+                                                            String transactionStatus,
+                                                            String accountId) {
+        return Specification.where(filterByTransactionId(transactionId))
+                .and(filterByTransactionType(transactionType))
+                .and(filterByTransactionStatus(transactionStatus))
+                .and(filterByAccountId(accountId));
     }
 }
