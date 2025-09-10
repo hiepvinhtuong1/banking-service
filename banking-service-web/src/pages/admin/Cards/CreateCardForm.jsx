@@ -53,7 +53,7 @@ function CreateCardForm() {
 			accountId,
 		}).then(() => {
 			toast.success("Card created successfully!");
-			navigate(`/account/${accountId}`);
+			navigate(`/admin/account/${accountId}`);
 		});
 	};
 
@@ -65,7 +65,7 @@ function CreateCardForm() {
 						underline="hover"
 						color="inherit"
 						component={RouterLink}
-						to="/dashboard"
+						to="/admin/dashboard"
 					>
 						Dashboard
 					</Link>
@@ -73,7 +73,7 @@ function CreateCardForm() {
 						underline="hover"
 						color="inherit"
 						component={RouterLink}
-						to="/card"
+						to="/admin/card"
 					>
 						Card
 					</Link>

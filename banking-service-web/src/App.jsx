@@ -26,6 +26,25 @@ import HomePage from "./pages/client/HomePage";
 import MyAccount from "./pages/client/MyAccount";
 import TransferPage from "./pages/client/TranferPage";
 import Transactions from "./pages/admin/transactions/Transactions";
+import MyTransactions from "./pages/client/MyTransactions";
+import CreateUserCardForm from "./pages/client/CreatedUserCardForm";
+
+// Route gốc: "/" → redirect theo role
+const RootRedirect = ({ user }) => {
+	if (!user) return <Navigate to="/login" replace />;
+
+	if (user.roles?.includes("ADMIN")) {
+		return <Navigate to="/admin" replace />;
+	}
+
+	if (user.roles?.includes("USER")) {
+		return <Navigate to="/app" replace />;
+	}
+
+	// Trường hợp không khớp role nào
+	return <Navigate to="/unauthorized" replace />;
+};
+
 const ProtectedRoute = ({ user, roles }) => {
 	if (!user) {
 		// Chưa đăng nhập → về login
@@ -62,6 +81,9 @@ function App() {
 		- Chỉ user có role = ADMIN mới truy cập
 		==============================
 	*/}
+			{/* Route gốc → phân role */}
+			<Route path="/" element={<RootRedirect user={currentUser} />} />
+
 			<Route
 				element={
 					<ProtectedRoute user={currentUser} roles={["ADMIN"]} />
@@ -113,6 +135,11 @@ function App() {
 					<Route index element={<HomePage />} />
 					<Route path="my-account" element={<MyAccount />} />
 					<Route path="transfer/:cardId" element={<TransferPage />} />
+					<Route path="history" element={<MyTransactions />} />
+					<Route
+						path="my-account/card/new"
+						element={<CreateUserCardForm />}
+					/>
 				</Route>
 			</Route>
 

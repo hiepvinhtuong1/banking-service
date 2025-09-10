@@ -47,10 +47,14 @@ function Account() {
 			<Box sx={{ paddingX: 2, my: 4 }}>
 				{/* Breadcrumb */}
 				<Breadcrumbs sx={{ mb: 2 }}>
-					<Link underline="hover" color="inherit" to="/dashboard">
+					<Link
+						underline="hover"
+						color="inherit"
+						to="/admin/dashboard"
+					>
 						Dashboard
 					</Link>
-					<Link underline="hover" color="inherit" to="/account">
+					<Link underline="hover" color="inherit" to="/admin/account">
 						Account
 					</Link>
 					<Typography color="text.primary">Detail</Typography>
@@ -113,7 +117,7 @@ function Account() {
 						<Button
 							variant="contained"
 							color="primary"
-							onClick={() => navigate("/card/new")}
+							onClick={() => navigate("/admin/card/new")}
 						>
 							Create Card
 						</Button>
@@ -174,7 +178,7 @@ function Account() {
 					variant="contained"
 					color="primary"
 					sx={{ mt: 4 }}
-					onClick={() => navigate("/account")}
+					onClick={() => navigate("/admin	/account")}
 				>
 					Back
 				</Button>

@@ -131,13 +131,18 @@ export const createPaymentAPI = async (data) => {
     return response.data.data; // Trả về TransactionResponse
 };
 
-export const depositAPI = async () => {
-    // TODO: Implement deposit logic
+
+export const depositAPI = async (request) => {
+    const res = await authorizedAxiosInstance.post("v1/payments/deposit", request);
+    return res.data;
 };
 
-export const withdrawAPI = async () => {
-    // TODO: Implement withdraw logic
+// Rút tiền
+export const withdrawAPI = async (request) => {
+    const res = await authorizedAxiosInstance.post("v1/payments/withDraw", request);
+    return res.data;
 };
+
 
 // ==============================
 // Transaction Management APIs
@@ -154,5 +159,22 @@ export const fetchTransactionTypesAPI = async () => {
 
 export const fetchTransactionStatusAPI = async () => {
     const response = await authorizedAxiosInstance.get(`/v1/transactions/status`);
+    return response.data.data;
+};
+
+export const approveTransactionAPI = async (transactionId) => {
+    const response = await authorizedAxiosInstance.put(`/v1/transactions/${transactionId}/approve`);
+    toast.success("Transaction approved successfully!");
+    return response.data.data;
+};
+
+export const rejectTransactionAPI = async (transactionId) => {
+    const response = await authorizedAxiosInstance.put(`/v1/transactions/${transactionId}/reject`);
+    toast.info("Transaction rejected!");
+    return response.data.data;
+};
+
+export const fetchMyTransactionsAPI = async (searchPath) => {
+    const response = await authorizedAxiosInstance.get(`/v1/transactions/my-transactions${searchPath}`);
     return response.data.data;
 };

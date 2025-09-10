@@ -46,7 +46,7 @@ function Accounts() {
 			query.set("size", DEFAULT_ITEMS_PER_PAGE);
 
 			// Điều hướng sang URL mới
-			navigate(`/account?${query.toString()}`);
+			navigate(`/admin/account?${query.toString()}`);
 		}
 	};
 
@@ -63,7 +63,11 @@ function Accounts() {
 			<Box sx={{ paddingX: 2, my: 4 }}>
 				{/* Breadcrumb */}
 				<Breadcrumbs sx={{ mb: 2 }}>
-					<Link underline="hover" color="inherit" href="/dashboard">
+					<Link
+						underline="hover"
+						color="inherit"
+						href="/admin/dashboard"
+					>
 						Dashboard
 					</Link>
 					<Typography color="text.primary">Account</Typography>
@@ -82,7 +86,7 @@ function Accounts() {
 					<Button
 						variant="contained"
 						color="primary"
-						onClick={() => navigate("/account/create")}
+						onClick={() => navigate("/admin/account/create")}
 					>
 						Create a account
 					</Button>
@@ -156,7 +160,7 @@ function Accounts() {
 												size="small"
 												onClick={() =>
 													navigate(
-														`/account/${account?.accountId}`
+														`/admin/account/${account?.accountId}`
 													)
 												}
 											>
@@ -168,7 +172,7 @@ function Accounts() {
 												size="small"
 												onClick={() =>
 													navigate(
-														`/account/update/${account?.accountId}`
+														`/admin/account/update/${account?.accountId}`
 													)
 												}
 											>

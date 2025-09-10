@@ -5,7 +5,6 @@ import {
 	Typography,
 	Stack,
 	Button,
-	Breadcrumbs,
 	Paper,
 	Grid,
 	TextField,
@@ -17,10 +16,10 @@ import {
 	withdrawAPI,
 	fetchBalanceByAccountIdAPI,
 } from "~/apis";
+import { toast } from "react-toastify";
 
 function CardDetail() {
 	const { cardId } = useParams();
-	console.log("🚀 ~ Card ~ id:", cardId);
 	const [card, setCard] = useState(null);
 	const [balance, setBalance] = useState(null);
 	const [depositAmount, setDepositAmount] = useState("");
@@ -29,7 +28,6 @@ function CardDetail() {
 
 	useEffect(() => {
 		const loadData = async () => {
-			// cardRes là object trả về từ API
 			const cardRes = await fetchCardByIdAPI(cardId);
 			setCard(cardRes);
 
@@ -45,19 +43,58 @@ function CardDetail() {
 	}, [cardId]);
 
 	const handleDeposit = async () => {
-		if (!depositAmount) return;
-		await depositAPI(cardId, depositAmount);
-		// Refresh balance sau khi nạp
-		fetchCardByIdAPI(cardId).then((res) => setBalance(res?.balance));
-		setDepositAmount("");
+		if (!depositAmount || !card?.accountId) {
+			toast.error("Vui lòng nhập số tiền nạp hợp lệ");
+			return;
+		}
+
+		const request = {
+			cardNumber: card.cardNumber,
+			amount: Number(depositAmount),
+		};
+
+		toast.promise(
+			depositAPI(request).then(async () => {
+				const balanceRes = await fetchBalanceByAccountIdAPI(
+					card.accountId
+				);
+				setBalance(balanceRes);
+				setDepositAmount("");
+			}),
+			{
+				pending: "Đang xử lý nạp tiền...",
+				success: "Nạp tiền thành công 🎉",
+				error: "Nạp tiền thất bại, vui lòng thử lại ❌",
+			}
+		);
 	};
 
 	const handleWithdraw = async () => {
-		if (!withdrawAmount) return;
-		await withdrawAPI(cardId, withdrawAmount);
-		// Refresh balance sau khi rút
-		fetchCardByIdAPI(cardId).then((res) => setBalance(res?.balance));
-		setWithdrawAmount("");
+		if (!withdrawAmount || !card?.accountId) {
+			toast.error("Vui lòng nhập số tiền rút hợp lệ");
+			return;
+		}
+
+		const request = {
+			accountId: card.accountId,
+			cardNumber: card.cardNumber,
+			amount: Number(withdrawAmount),
+		};
+
+		toast.promise(
+			withdrawAPI(request).then(async () => {
+				const balanceRes = await fetchBalanceByAccountIdAPI(
+					card.accountId
+				);
+				setBalance(balanceRes);
+				setWithdrawAmount("");
+			}),
+			{
+				pending: "Đang xử lý rút tiền...",
+				success: "Rút tiền thành công 🎉",
+				error: "Rút tiền thất bại, vui lòng thử lại ❌",
+			}
+		);
 	};
 
 	return (
@@ -65,7 +102,7 @@ function CardDetail() {
 			container
 			spacing={4}
 			justifyContent="space-around"
-			alignItems="stretch" // quan trọng: cho các item cao bằng nhau
+			alignItems="stretch"
 		>
 			{/* Card Info */}
 			<Grid item xs={12} md={5} display="flex">
@@ -90,9 +127,9 @@ function CardDetail() {
 						variant="contained"
 						color="primary"
 						sx={{ mt: 3 }}
-						onClick={() => navigate("/account")}
+						onClick={() => navigate("/admin/card")}
 					>
-						Back to User
+						Back to list card
 					</Button>
 				</Paper>
 			</Grid>

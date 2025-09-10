@@ -55,7 +55,11 @@ function Cards() {
 			<Box sx={{ paddingX: 2, my: 4 }}>
 				{/* Breadcrumb */}
 				<Breadcrumbs sx={{ mb: 2 }}>
-					<Link underline="hover" color="inherit" href="/dashboard">
+					<Link
+						underline="hover"
+						color="inherit"
+						href="/admin/dashboard"
+					>
 						Dashboard
 					</Link>
 					<Typography color="text.primary">Card</Typography>
@@ -122,7 +126,7 @@ function Cards() {
 												size="small"
 												onClick={() =>
 													navigate(
-														`/card/${card?.cardId}`
+														`/admin/card/${card?.cardId}`
 													)
 												}
 											>

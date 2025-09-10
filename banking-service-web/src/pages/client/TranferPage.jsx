@@ -14,10 +14,13 @@ import { toast } from "react-toastify";
 import { selectCurrentUser } from "~/redux/user/userSlice";
 import { fetchCardByCardNumberAPI, sendOtpAPI } from "~/apis";
 import { createPaymentAPI } from "../../apis";
+import { useDispatch } from "react-redux";
+import { updateBalance } from "~/redux/user/userSlice";
 
 export default function TransferPage() {
 	const { cardId } = useParams();
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 	const currentUser = useSelector(selectCurrentUser);
 
 	// tìm thẻ hiện tại trong danh sách thẻ user
@@ -79,19 +82,25 @@ export default function TransferPage() {
 			success: {
 				render({ data }) {
 					// Reset dữ liệu sau khi thành công
+
+					// ✅ Cập nhật lại balance trong Redux
+					dispatch(
+						updateBalance({
+							availableBalance:
+								currentUser?.balance?.availableBalance -
+								data?.amount,
+							holdBalance:
+								currentUser?.balance?.holdBalance +
+								data?.amount,
+						})
+					);
+
 					setReceiver(null);
 					setSearchCardId("");
 					setAmount("");
 					setOtp("");
 					setOtpSent(false);
 					return `Chuyển khoản thành công! Mã giao dịch: ${data.transactionId}`;
-				},
-			},
-			error: {
-				render({ data }) {
-					return (
-						data?.response?.data?.message || "Giao dịch thất bại!"
-					);
 				},
 			},
 		});
@@ -217,6 +226,7 @@ export default function TransferPage() {
 							/>
 
 							<Button
+								className="interceptor-loading"
 								variant="contained"
 								color="primary"
 								fullWidth
@@ -259,6 +269,7 @@ export default function TransferPage() {
 									{/* Nếu chưa gửi OTP thì hiển thị nút Gửi OTP */}
 									{!otpSent ? (
 										<Button
+											className="interceptor-loading"
 											variant="contained"
 											color="secondary"
 											sx={{ maxWidth: 250 }}
@@ -280,6 +291,7 @@ export default function TransferPage() {
 												sx={{ mb: 2 }}
 											/>
 											<Button
+												className="interceptor-loading"
 												variant="contained"
 												color="success"
 												sx={{ maxWidth: 250 }}

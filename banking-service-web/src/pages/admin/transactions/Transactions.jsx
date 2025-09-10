@@ -25,6 +25,8 @@ import {
 	fetchTransactionsAPI,
 	fetchTransactionTypesAPI,
 	fetchTransactionStatusAPI,
+	approveTransactionAPI,
+	rejectTransactionAPI,
 } from "~/apis";
 
 function Transactions() {
@@ -247,20 +249,62 @@ function Transactions() {
 										{transaction?.updatedAt}
 									</TableCell>
 									<TableCell
-										sx={{ width: 150, textAlign: "center" }}
+										sx={{ width: 200, textAlign: "center" }}
 									>
-										<Button
-											variant="contained"
-											color="warning"
-											size="small"
-											onClick={() =>
-												navigate(
-													`/transaction/update/${transaction?.transactionId}`
-												)
-											}
+										<Stack
+											direction="row"
+											spacing={1}
+											justifyContent="center"
 										>
-											Update Success
-										</Button>
+											<Button
+												variant="contained"
+												color="success"
+												size="small"
+												onClick={async () => {
+													await approveTransactionAPI(
+														transaction.transactionId
+													);
+													// Refresh lại danh sách
+													fetchTransactionsAPI(
+														location.search
+													).then((res) => {
+														setTransactions(
+															res?.content || []
+														);
+														setTotalTransactions(
+															res?.totalElements ||
+																0
+														);
+													});
+												}}
+											>
+												Approve
+											</Button>
+											<Button
+												variant="contained"
+												color="error"
+												size="small"
+												onClick={async () => {
+													await rejectTransactionAPI(
+														transaction.transactionId
+													);
+													// Refresh lại danh sách
+													fetchTransactionsAPI(
+														location.search
+													).then((res) => {
+														setTransactions(
+															res?.content || []
+														);
+														setTotalTransactions(
+															res?.totalElements ||
+																0
+														);
+													});
+												}}
+											>
+												Reject
+											</Button>
+										</Stack>
 									</TableCell>
 								</TableRow>
 							))}

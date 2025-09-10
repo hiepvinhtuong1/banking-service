@@ -64,7 +64,7 @@ function UpdateAccountForm() {
 		console.log("🚀 ~ onSubmit ~ data:", data);
 		updateAccountAPI(accountId, data).then(() => {
 			toast.success("Account updated successfully!");
-			navigate("/account");
+			navigate("/admin/account");
 		});
 	};
 
@@ -74,8 +74,8 @@ function UpdateAccountForm() {
 		<Container disableGutters maxWidth={false}>
 			<Box sx={{ paddingX: 2, my: 4 }}>
 				<Breadcrumbs sx={{ mb: 2 }}>
-					<RouterLink to="/dashboard">Dashboard</RouterLink>
-					<RouterLink to="/account">Account</RouterLink>
+					<RouterLink to="/admin/dashboard">Dashboard</RouterLink>
+					<RouterLink to="/admin/account">Account</RouterLink>
 					<Typography color="text.primary">Update Account</Typography>
 				</Breadcrumbs>
 			</Box>

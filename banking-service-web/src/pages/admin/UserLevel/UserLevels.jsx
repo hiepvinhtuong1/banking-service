@@ -51,7 +51,7 @@ function UserLevels() {
 					<Button
 						variant="contained"
 						color="primary"
-						onClick={() => navigate("/user-level/create")}
+						onClick={() => navigate("/admin/user-level/create")}
 					>
 						Add New User Level
 					</Button>

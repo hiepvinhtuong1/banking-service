@@ -14,32 +14,28 @@ const initialState = {
 
 export const loginUserAPI = createAsyncThunk(
     'user/loginUserAPI',
-    async (data, { rejectWithValue }) => {
-        try {
-            const response = await authorizedAxiosInstance.post(`/v1/auth/login`, data);
-            const resData = response.data.data;
+    async (data) => {
+        const response = await authorizedAxiosInstance.post(`/v1/auth/login`, data);
+        const resData = response.data.data;
 
-            // Lưu token ra ngoài Redux (localStorage / cookie)
-            localStorage.setItem("access_token", resData.accessToken);
-            localStorage.setItem("refresh_token", resData.refreshToken);
+        // Lưu token ra ngoài Redux (localStorage / cookie)
+        localStorage.setItem("access_token", resData.accessToken);
+        localStorage.setItem("refresh_token", resData.refreshToken);
 
-            // Tách roles và permissions
-            const roles = resData.accountResponse.roles.map(r => r.name);
-            const permissions = resData.accountResponse.roles.flatMap(r =>
-                r.permissions.map(p => p.name)
-            );
+        // Tách roles và permissions
+        const roles = resData.accountResponse.roles.map(r => r.name);
+        const permissions = resData.accountResponse.roles.flatMap(r =>
+            r.permissions.map(p => p.name)
+        );
 
-            // Trả về object đã loại bỏ roles lồng
-            const { roles: _, ...accountWithoutNestedRoles } = resData.accountResponse;
+        // Trả về object đã loại bỏ roles lồng
+        const { roles: _, ...accountWithoutNestedRoles } = resData.accountResponse;
 
-            return {
-                ...accountWithoutNestedRoles,
-                roles,
-                permissions
-            };
-        } catch (error) {
-            return rejectWithValue(error.response?.data || error.message);
-        }
+        return {
+            ...accountWithoutNestedRoles,
+            roles,
+            permissions
+        };
     }
 );
 
@@ -81,6 +77,36 @@ export const userSlice = createSlice({
     initialState,
 
     //Reducers: nơi xử lí dữ liệu đồng bộ
+    reducers: {
+        updateBalance: (state, action) => {
+            if (state.currentUser) {
+                console.log("🚀 ~ state.currentUser.balance:", state.currentUser.balance)
+                console.log("🚀 ~ action.payload:", action.payload)
+
+                state.currentUser.balance = {
+                    ...state.currentUser.balance,
+                    ...action.payload
+                }
+            }
+        },
+        addNewCard: (state, action) => {
+            if (state.currentUser) {
+                const newCard = {
+                    cardId: action.payload.cardId,
+                    cardNumber: action.payload.cardNumber,
+                    cardType: action.payload.cardType,
+                    expiryDate: action.payload.expiryDate,
+                    status: action.payload.status
+                };
+
+                state.currentUser.cards = [
+                    ...(state.currentUser.cards || []),
+                    newCard
+                ];
+            }
+        }
+
+    },
     //ExtraReducers: nơi xử lí dữ liệu bất đồng bộ 
     extraReducers: (builder) => {
         builder.addCase(loginUserAPI.fulfilled, (state, action) => {
@@ -106,7 +132,7 @@ export const userSlice = createSlice({
  */
 
 // export const { } = accountSlice.actions
-
+export const { updateBalance, addNewCard } = userSlice.actions;
 /** 
  * Selectors: Là nơi dành cho các component bên dưới gọi bằng hook useSelector() để lấy dữ liệu
  * từ trong kho Redux ra để sử dụng

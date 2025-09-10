@@ -32,7 +32,7 @@ function CreateUserLevelForm() {
 	const onSubmit = (data) => {
 		createNewUserLevelAPI(data).then(() => {
 			toast.success("User level created successfully!");
-			navigate("/user-level");
+			navigate("/admin/user-level");
 		});
 	};
 
@@ -45,7 +45,7 @@ function CreateUserLevelForm() {
 						underline="hover"
 						color="inherit"
 						component={RouterLink}
-						to="/dashboard"
+						to="/admin/dashboard"
 					>
 						Dashboard
 					</Link>
@@ -53,7 +53,7 @@ function CreateUserLevelForm() {
 						underline="hover"
 						color="inherit"
 						component={RouterLink}
-						to="/user-level"
+						to="/admin/user-level"
 					>
 						User Level
 					</Link>

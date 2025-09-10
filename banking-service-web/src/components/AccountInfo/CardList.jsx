@@ -1,17 +1,22 @@
 import { Card, CardContent, Typography, Button, Box } from "@mui/material";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { selectCurrentUser } from "~/redux/user/userSlice";
-import { useRoleNavigate } from "../../customHooks/useRoleNavigate";
 export default function CardList() {
 	const currentUser = useSelector(selectCurrentUser);
-	const navigate = useRoleNavigate();
+	const navigate = useNavigate();
 	return (
 		<Card sx={{ width: "100%" }}>
 			<CardContent>
 				<Typography variant="h5" gutterBottom>
 					Danh sách thẻ của bạn
 				</Typography>
-				<Button variant="contained" color="warning" sx={{ mb: 2 }}>
+				<Button
+					variant="contained"
+					color="warning"
+					sx={{ mb: 2 }}
+					onClick={() => navigate("/my-account/card/new")}
+				>
 					Create Card
 				</Button>
 
@@ -52,7 +57,7 @@ export default function CardList() {
 								sx={{ mt: 1 }}
 								fullWidth
 								onClick={() =>
-									navigate(`/transfer/${card.cardId}`)
+									navigate(`/app/transfer/${card.cardId}`)
 								}
 							>
 								Chuyển khoản

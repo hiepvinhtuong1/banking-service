@@ -56,7 +56,7 @@ function CreateAccountForm() {
 	const onSubmit = (data) => {
 		createNewAccountAPI(data).then(() => {
 			toast.success("Account created successfully!");
-			navigate("/account");
+			navigate("admin/account");
 		});
 	};
 
@@ -68,7 +68,7 @@ function CreateAccountForm() {
 						underline="hover"
 						color="inherit"
 						component={RouterLink}
-						to="/dashboard"
+						to="/admin/dashboard"
 					>
 						Dashboard
 					</Link>
@@ -76,7 +76,7 @@ function CreateAccountForm() {
 						underline="hover"
 						color="inherit"
 						component={RouterLink}
-						to="/account"
+						to="/admin/account"
 					>
 						Account
 					</Link>

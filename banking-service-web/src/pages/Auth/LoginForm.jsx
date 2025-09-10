@@ -1,5 +1,5 @@
 // TrungQuanDev: https://youtube.com/@trungquandev
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
@@ -20,11 +20,10 @@ import {
 	EMAIL_RULE,
 	FIELD_REQUIRED_MESSAGE,
 } from "~/utils/validators";
-import { useRoleNavigate } from "~/customHooks/useRoleNavigate";
 
 function LoginForm() {
 	const dispatch = useDispatch();
-	const navigate = useRoleNavigate();
+	const navigate = useNavigate();
 
 	const [searchParams] = useSearchParams();
 	const registeredEmail = searchParams.get("registeredEmail");
