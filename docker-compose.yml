@@ -1,0 +1,93 @@
+version: "3.8" # Lưu ý: 'version' có thể bị bỏ qua theo cảnh báo trước đó
+services:
+    mysql:
+        image: mysql:8.0.36-debian
+        container_name: banking-mysql
+        environment:
+            MYSQL_DATABASE: ${DATABASE_NAME}
+            MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+        ports:
+            - "3310:3306"
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "mysqladmin",
+                    "ping",
+                    "-h",
+                    "localhost",
+                    "-u",
+                    "root",
+                    "-p${DATABASE_PASSWORD}",
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 30s # Đợi 30s để MySQL khởi động
+        networks:
+            - banking-net
+
+    redis:
+        image: redis:7.4
+        container_name: banking-redis
+        ports:
+            - "6379:6379"
+        networks:
+            - banking-net
+
+    activemq:
+        image: rmohr/activemq:latest
+        container_name: banking-activemq
+        ports:
+            - "61616:61616" # JMS
+            - "8161:8161" # Web UI
+        environment:
+            ACTIVEMQ_USER: admin
+            ACTIVEMQ_PASSWORD: admin
+        networks:
+            - banking-net
+
+    banking-service-api:
+        build:
+            context: ./banking-service-api
+            dockerfile: Dockerfile
+        container_name: banking-service-api
+        ports:
+            - "8080:8080"
+        environment:
+            SPRING_PROFILES_ACTIVE: production
+            DATABASE_URL: ${DATABASE_URL}
+            DATABASE_USERNAME: ${DATABASE_USERNAME}
+            DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+            USER_NAME_MAIL_SENDER: ${USER_NAME_MAIL_SENDER}
+            PASSWORD_MAIL_SENDER: ${PASSWORD_MAIL_SENDER}
+            ACCESS_TOKEN_SIGNER_KEY: ${ACCESS_TOKEN_SIGNER_KEY}
+            REFRESH_TOKEN_SIGNER_KEY: ${REFRESH_TOKEN_SIGNER_KEY}
+            MAILERSEND_API_TOKEN: ${MAILERSEND_API_TOKEN}
+            MAILERSEND_FROM_EMAIL: ${MAILERSEND_FROM_EMAIL}
+            MAILERSEND_FROM_NAME: ${MAILERSEND_FROM_NAME}
+        depends_on:
+            mysql:
+                condition: service_healthy # Đợi MySQL sẵn sàng
+            redis:
+                condition: service_started
+            activemq:
+                condition: service_started
+        networks:
+            - banking-net
+
+    banking-service-fe:
+        build:
+            context: ./banking-service-web
+            dockerfile: Dockerfile
+        container_name: banking-service-web
+        ports:
+            - "3000:80" # Ánh xạ cổng 3000 trên host tới cổng 80 trong container
+        depends_on:
+            - banking-service-api # Đảm bảo backend chạy trước FE (tùy chọn)
+        networks:
+            - banking-net
+
+networks:
+    banking-net:
+        driver: bridge

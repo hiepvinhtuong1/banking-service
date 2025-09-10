@@ -1,4 +1,4 @@
-package com.tuanhiep.banking_service.dto.response;
+package com.tuanhiep.notification_service.dto;
 
 import lombok.*;
 

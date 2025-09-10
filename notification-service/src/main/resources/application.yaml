@@ -8,3 +8,15 @@ spring:
     password: admin
   jms:
     pub-sub-domain: false   # false = Queue
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${USER_NAME_MAIL_SENDER}
+    password: ${PASSWORD_MAIL_SENDER}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true

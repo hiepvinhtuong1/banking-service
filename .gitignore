@@ -1,0 +1,53 @@
+# =========================
+#  Java / Spring Boot
+# =========================
+/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# =========================
+#  Maven
+# =========================
+.mvn/
+.mvnw
+.mvnw.cmd
+
+# =========================
+#  Logs
+# =========================
+*.log
+logs/
+spring.log
+
+# =========================
+#  IDE (IntelliJ / Eclipse / VS Code)
+# =========================
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+
+# =========================
+#  OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+#  Docker
+# =========================
+.env
+docker-compose.override.yml
+
+# =========================
+#  Node.js (nếu có frontend ở banking-service-web)
+# =========================
+node_modules/
+dist/
+build/
